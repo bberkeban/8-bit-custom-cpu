@@ -83,23 +83,36 @@ In order to compile and simulate the proccessor in your local device, you can ru
 # For branch jump simulation: 
 iverilog -o CPU_sim_BJP.vvp src/*.v tb/BJP.v
 vvp CPU_sim_BJP.vvp
-gtkwave .vcd
+gtkwave BJP.vcd
 ```
 ```bash
 # For ALU, LIM, SIN and RIN simulation;
 iverilog -o CPU_sim_ALSR.vvp src/*.v tb/ALU_LIM_SIN_RIN.v
 vvp CPU_sim_ALSR.vvp
-gtkwave .vcd
+gtkwave ALU_LIM_SIN_RIN.vcd
 ```
 ```bash
-For CLL and RET simuatlion:
+# For CLL and RET simuatlion:
 iverilog -o CPU_sim_CLLRET.vvp src/*.v tb/CLL_RET.v
 vvp CPU_sim_CLLRET.vvp
-gtkwave .vcd
+gtkwave CLL_RET.vcd
 ```
-
 
 #### Verification of ALU-LIM-SIN-RIN Commands
 
-Using testbench file ALU_LIM_SIN_RIN.v, conclusion below is obtained with help of Icarus Verilog and GTKwave
+Using testbench file tb/ALU_LIM_SIN_RIN.v:
+<img width="1260" height="318" alt="ALU_LIM_SIN_RIN_tb" src="https://github.com/user-attachments/assets/20eaf46d-081c-470d-afe8-52c302c504a7" />
+
+#### Verification of Branch Jump Command
+
+Using testbench file tb/BJP.v:
+<img width="1138" height="273" alt="BJP_tb" src="https://github.com/user-attachments/assets/3cfa91cc-b1cb-4ef8-a30a-022cb940fee0" />
+
+#### Verification of CALL and RETURN Commands
+
+Using testbench file tb/CLL_RET.v
+<img width="1203" height="274" alt="CLL_RET_tb" src="https://github.com/user-attachments/assets/83d380f7-0eb1-40a3-b843-d4b29e0dca5a" />
+
+
+
 
