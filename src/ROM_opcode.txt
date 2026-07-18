@@ -1,31 +1,3 @@
-//opcode format should be determined!
-// 0000_xxx(ALU SEL)_xxx_xxx_xxx: ALU: first xxx destination Q, second xxx source Q1, third xxx source Q2.
-    // 000 ADD
-    // 001 SUB
-    // 010 SIR
-    // 011 SIL
-    // 100 AND
-    // 101 XOR
-    // 110 OR
-    // 111 ASR
-// 0001_xxx_X_xxxxxxxx: load immediate value to pointed register: LIM (Load-Immediate)
-// 0010_xxx(destination)_xxx(source)_XXXXXX: MOV
-// 0011_xxx_xxx_XXXXXX: SIN -STORE INDIRECT- (source first xxx, address destination register second xxx)
-// 0100_xxx_xxx_XXXXXX: RIN -READ INDIRECT- (destination first xxx, address source register second xxx)
-// 0101_XXXX_xxxxxxxx: JMP (JUMP) removed!
-// 0101_xxxx(condition select)_xxxxxxxx: BJP (BRANCH JUMP)
-//
-// conditions = 0000 equal == , 0001 not equal =!, 0010 lesser than < (signed), 
-// 0011 greater or equal >= (signed), 0100 greater than > (signed), 0101 lesser or equal <= (signed), 
-// 0110 lesser than (unsigned), 0111 greater or equal (unsigned)
-// 1000 greater (unsigned), 1001 lesser or equal (unsigned)
-// 1010 JMP if overflow, 1011 JMP if no overflow, 1100 JMP if positive
-// 1101 JMP if negative, 1110 always JMP, 1111 never JMP no operation
-//
-//
-//
-// 1000_XXXX_xxxxxxxx(address): CLL (CALL) (JUMP + LINK)
-// 1001_XXXX_XXXXXXXX: RET (RETURN)
 //
 // 0001_000_0_00011000 //0 BJP test start
 // 0001_001_0_00011000 //1
@@ -45,9 +17,9 @@
 // 0011_011_110_000000
 // 0100_010_110_000000  ALU LIM SIN RIN instruction set end
 //
-0001_000_0_00001000 //0
+0001_000_0_00001000 //0 CLL (call) and RET (return) test start
 0001_001_0_00000010 //1
 1000_0000_00000100 //2
 0001_010_00010000 //3
 0000_000_101_000_001 //4
-1001_0000_00000000 //5 
+1001_0000_00000000 //5 CLL and RET test end
