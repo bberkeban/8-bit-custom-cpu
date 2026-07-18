@@ -55,7 +55,7 @@ Since this CPU is custom, ISA format should be made clear:
 | `1110` | Always JMP |
 | `1111` | Never JMP (No operation) |
 
-> *Note: There is no independent unconditinonal jump (JMP) command.*
+> *Note: There is no independent unconditinonal jump (JMP) command since ehere is Always Jump (1110) in BJP Command*
 
 #### Some Design Notes
 
