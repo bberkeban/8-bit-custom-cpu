@@ -1,0 +1,138 @@
+$date
+	Fri Jul 17 20:01:28 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module CLL_RET $end
+$var reg 1 ! clk $end
+$upscope $end
+$scope module CLL_RET $end
+$var reg 1 " rst $end
+$upscope $end
+$scope module CLL_RET $end
+$scope module UUT $end
+$scope module PC $end
+$var reg 8 # PC [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module CLL_RET $end
+$scope module UUT $end
+$scope module READOM $end
+$var wire 16 $ instruction [15:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module CLL_RET $end
+$scope module UUT $end
+$scope module REG $end
+$var reg 8 % \registers[0] [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module CLL_RET $end
+$scope module UUT $end
+$scope module REG $end
+$var reg 8 & \registers[1] [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module CLL_RET $end
+$scope module UUT $end
+$scope module REG $end
+$var reg 8 ' \registers[2] [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module CLL_RET $end
+$scope module UUT $end
+$scope module REG $end
+$var reg 8 ( \registers[5] [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module CLL_RET $end
+$scope module UUT $end
+$scope module REG $end
+$var reg 8 ) \registers[7] [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+b0 )
+b0 (
+b0 '
+b0 &
+b0 %
+b1000000001000 $
+b0 #
+1"
+0!
+$end
+#5
+b0 )
+b0 (
+b0 '
+b0 &
+b0 %
+1!
+#10
+0!
+0"
+#15
+b1001000000010 $
+b1 #
+b1000 %
+1!
+#20
+0!
+#25
+b1000000000000100 $
+b10 &
+b10 #
+1!
+#30
+0!
+#35
+b101000001 $
+b100 #
+b11 )
+1!
+#40
+0!
+#45
+b1001000000000000 $
+b1010 (
+b101 #
+1!
+#50
+0!
+#55
+b101000010000 $
+b11 #
+1!
+#60
+0!
+#65
+b101000001 $
+b1000 %
+b100 #
+1!
+#70
+0!
+#75
+b1001000000000000 $
+b101 #
+b1010 (
+1!
+#80
+0!

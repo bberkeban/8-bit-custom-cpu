@@ -1,0 +1,120 @@
+$date
+	Fri Jul 17 18:15:42 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module BJPtb $end
+$var reg 1 ! clk $end
+$upscope $end
+$scope module BJPtb $end
+$var reg 1 " rst $end
+$upscope $end
+$scope module BJPtb $end
+$scope module UUT $end
+$scope module PC $end
+$var reg 8 # PC [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module BJPtb $end
+$scope module UUT $end
+$scope module READOM $end
+$var wire 16 $ instruction [15:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module BJPtb $end
+$scope module UUT $end
+$scope module REG $end
+$var reg 8 % \registers[0] [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module BJPtb $end
+$scope module UUT $end
+$scope module REG $end
+$var reg 8 & \registers[1] [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module BJPtb $end
+$scope module UUT $end
+$scope module REG $end
+$var reg 8 ' \registers[2] [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope module BJPtb $end
+$scope module UUT $end
+$scope module REG $end
+$var reg 8 ( \registers[3] [7:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+b0 (
+b0 '
+b0 &
+b0 %
+b1000000011000 $
+b0 #
+1"
+0!
+$end
+#5
+b0 (
+b0 '
+b0 &
+b0 %
+1!
+#10
+0!
+0"
+#15
+b1001000011000 $
+b1 #
+b11000 %
+1!
+#20
+0!
+#25
+b1010001000 $
+b11000 &
+b10 #
+1!
+#30
+0!
+#35
+b101000000001000 $
+b11 #
+b0 '
+1!
+#40
+0!
+#45
+b10000001 $
+b1000 #
+1!
+#50
+0!
+#55
+bx $
+b1001 #
+b110000 '
+1!
+#60
+0!
+#65
+b1010 #
+1!
+#70
+0!
