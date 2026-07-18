@@ -46,8 +46,8 @@ module CPU(
 
     always @(*) begin //register write data selection MUX
         case (MUX_sel_reg)
-            3'b000 : registerwritedata = op; //ALU op wire tanımla
-            3'b001 : registerwritedata = ram_read_data; //ram read data wire tanımla
+            3'b000 : registerwritedata = op;
+            3'b001 : registerwritedata = ram_read_data;
             3'b010 : registerwritedata = im_reg;
             3'b011 : registerwritedata = Q1;
             3'b100 : registerwritedata = PCSEL + 8'b00000001;
@@ -58,7 +58,7 @@ module CPU(
     always @(*) begin //PC load data selection mux
         case (mux_sel_PC)
             1'b0 : finalizedPCload = load_data_PC;
-            1'b1 : finalizedPCload = Q1; //Q1 wire tanımla
+            1'b1 : finalizedPCload = Q1;
             default: finalizedPCload = 8'b0;
         endcase
     end
@@ -100,7 +100,7 @@ module CPU(
         .rst(rst),
         .I(finalizedPCload),
         .load(load_PC),
-        .PC(PCSEL) //mux lazım değilmiş direct connection
+        .PC(PCSEL)
     );
     
     registerfile REG(
