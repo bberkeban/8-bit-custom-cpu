@@ -30,7 +30,7 @@ module ALU (
                 {c_out,op} = I1 - I2;
                 of_flag = (op[7] & ~I1[7] & I2[7]) | (~op[7] & I1[7] & ~I2[7]);
             end
-            3'b010 : begin //shift right //düzelt
+            3'b010 : begin //shift right
                 c_out = I1[0];
                 op = {1'b0, I1[7:1]};
             end
