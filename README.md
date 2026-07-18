@@ -74,3 +74,32 @@ For visualization, the datapath of CPU is shown below schematic:
 #### Single Cycle 8-Bit CPU
 <img width="3240" height="2036" alt="CPUschematicfinalized" src="https://github.com/user-attachments/assets/477ea94c-2b54-4572-a9ab-096c0740da8c" />
 
+### Simulations
+
+Results below are obtained via **Icarus Verilog** and **GTKwave**.
+In order to compile and simulate the proccessor in your local device, you can run these terminal commands.
+
+```bash
+# For branch jump simulation: 
+iverilog -o CPU_sim_BJP.vvp src/*.v tb/BJP.v
+vvp CPU_sim_BJP.vvp
+gtkwave .vcd
+```
+```bash
+# For ALU, LIM, SIN and RIN simulation;
+iverilog -o CPU_sim_ALSR.vvp src/*.v tb/ALU_LIM_SIN_RIN.v
+vvp CPU_sim_ALSR.vvp
+gtkwave .vcd
+```
+```bash
+For CLL and RET simuatlion:
+iverilog -o CPU_sim_CLLRET.vvp src/*.v tb/CLL_RET.v
+vvp CPU_sim_CLLRET.vvp
+gtkwave .vcd
+```
+
+
+#### Verification of ALU-LIM-SIN-RIN Commands
+
+Using testbench file ALU_LIM_SIN_RIN.v, conclusion below is obtained with help of Icarus Verilog and GTKwave
+
