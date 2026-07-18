@@ -16,7 +16,7 @@ module ControlUnit (
 
     output reg load_PC,
     output reg [7:0] load_data_PC,
-    output reg mux_sel_PC, // 0 take from ROM, 1 take from REG
+    output reg mux_sel_PC, // 0 load from PC, 1 load from REG
 
     output reg we_ram,
 
