@@ -13,7 +13,7 @@ module RAM (
     reg [7:0] RAM [0:255];
 
     initial begin
-        for (i = 0; i < 256; i = i + 1) begin
+        for (i = 0; i < 256; i = i + 1) begin //for loop shouldn't be in here if its a real cpu, i set ram array to 0 for simulations
             RAM[i] = 8'b0;
         end
     end
