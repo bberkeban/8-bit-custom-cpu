@@ -21,7 +21,7 @@ Since this CPU is custom, ISA format should be made clear:
 
 > *Note: `Q` represents/means register.*
 
-CPU's ALU provides 8 operation. This set of operation is enough for basic computation. Moreover, advanced algorithms could be constructed with help of CLL and RET commands.
+CPU's ALU provides 8 operation. This set is sufficient for basic computation. Moreover, more advanced algorithms can be constructed with the help of CLL and RET commands/instructions.
 
 #### 2. ALU Operations (`ALU_sel [11:9]`)
 | `ALU_sel` | Operation | Description |
@@ -35,7 +35,7 @@ CPU's ALU provides 8 operation. This set of operation is enough for basic comput
 | `110` | **OR**  | Bitwise OR |
 | `111` | **ASR** | Arithmetic Shift Right |
 
-Four bits of branch select provides 16 conditions. Even though CPU is just 8 bit, it could make decisions through relatively complex scenerios.
+A 4 bit of branch select provides 16 conditions. Even though CPU has an 8-bit architecture, it is capable of making decisions through relatively complex scenarios.
 
 #### 3. Branch JMP Conditions (`condition [11:8]`)
 | `cond`  | Description |
@@ -59,7 +59,7 @@ Four bits of branch select provides 16 conditions. Even though CPU is just 8 bit
 
 > *Note: There is no independent unconditinonal jump (JMP) command.*
 
-ISA shows potential in developments of more complex CPU from this base. CPU can make decisions, call functions and return, check conditions and branch jump.
+ISA shows potential for the development of a more complex CPU architectures. CPU can make decisions, call functions and return, evaluate conditions and branch jump.
 
 ### Datapath Schematic
 
