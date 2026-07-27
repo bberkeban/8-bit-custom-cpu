@@ -1,6 +1,6 @@
 # 8 Bit Custom Single Cycle CPU Design
-## Built from scratch in Verilog
 
+## Architecture
 Since this CPU is custom, ISA format should be made clear:
 
 ### Instruction Set Architecture (ISA)
@@ -121,6 +121,14 @@ Simulating testbench file tb/CLL_RET.v
 <img width="1203" height="274" alt="CLL_RET_tb" src="https://github.com/user-attachments/assets/83d380f7-0eb1-40a3-b843-d4b29e0dca5a" />
 
 Verification of CALL and RETURN operations.
+
+## Synthesis
+
+### Timing and Critical Path Analysis
+
+#### 1) Topological Gate Depth
+
+Timing analysis and critical path of CPU is determined via yosys using below terminal commands:
 
 
 
