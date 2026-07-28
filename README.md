@@ -1,6 +1,6 @@
 # 8 Bit Custom Single Cycle CPU Design
-## Built from scratch in Verilog
 
+## Architecture
 Since this CPU is custom, ISA format should be made clear:
 
 ### Instruction Set Architecture (ISA)
@@ -8,7 +8,7 @@ Since this CPU is custom, ISA format should be made clear:
 #### 1. Core Instructions [15:12]
 | Opcode [15:12] | Instruction | Bit Layout [11:0] | Description |
 | :---: | :--- | :--- | :--- |
-| `0000` | **ALU** | `ALU_sel[11:9]`, `destQ[8:6]`, `srcQ1[5:3]`, `srcQ2[2:0]` | Performs ALU operation according ALU_sel[11:9]. |
+| `0000` | **ALU** | `ALU_sel[11:9]`, `destQ[8:6]`, `srcQ1[5:3]`, `srcQ2[2:0]` | Performs ALU operation according to ALU_sel[11:9]. |
 | `0001` | **LIM** | `destQ[11:9]`, `X[8]`, `im[7:0]` | Load Immediate: Loads 8-bit value to pointed register. |
 | `0010` | **MOV** | `destQ2[11:9]`, `srcQ1[8:6]`, `XXXXXX[5:0]` | Move: Copies data from source to destination. |
 | `0011` | **SIN** | `srcQ[11:9]`, `addressQ[8:6]`, `XXXXXX[5:0]` | Store Indirect: Stores source data to RAM address pointed by destination register. |
@@ -55,7 +55,7 @@ Since this CPU is custom, ISA format should be made clear:
 | `1110` | Always JMP |
 | `1111` | Never JMP (No operation) |
 
-> *Note: There is no independent unconditinonal jump (JMP) command since ehere is Always Jump (1110) in BJP Command*
+> *Note: There is no independent unconditinonal jump (JMP) command since there is Always Jump (1110) in BJP Command*
 
 #### Some Design Notes
 
@@ -69,7 +69,7 @@ Register 7 (Q7) is reserved for CLL and RET instructions. Next instruction addre
 
 ### Datapath Schematic
 
-For visualization, the datapath of CPU is shown below schematic:
+For visualization, the datapath of CPU is shown in below schematic:
 
 #### Single Cycle 8-Bit CPU
 <img width="3240" height="2036" alt="CPUschematicfinalized" src="https://github.com/user-attachments/assets/477ea94c-2b54-4572-a9ab-096c0740da8c" />
@@ -100,18 +100,39 @@ gtkwave CLL_RET.vcd
 
 #### Verification of ALU-LIM-SIN-RIN Commands
 
-Using testbench file tb/ALU_LIM_SIN_RIN.v:
+Simulating testbench file tb/ALU_LIM_SIN_RIN.v:
+
 <img width="1260" height="318" alt="ALU_LIM_SIN_RIN_tb" src="https://github.com/user-attachments/assets/20eaf46d-081c-470d-afe8-52c302c504a7" />
+
+This simulation verifies ALU, LIM (Load Immediate), SIN-RIN (Store-Read Indirect) operations.
 
 #### Verification of Branch Jump Command
 
-Using testbench file tb/BJP.v:
+Simulating testbench file tb/BJP.v:
+
 <img width="1138" height="273" alt="BJP_tb" src="https://github.com/user-attachments/assets/3cfa91cc-b1cb-4ef8-a30a-022cb940fee0" />
+
+CPU can perform branch jump. In this simulation CPU evaluated the equality and jumped from PC = 3 to PC = 8.
 
 #### Verification of CALL and RETURN Commands
 
-Using testbench file tb/CLL_RET.v
+Simulating testbench file tb/CLL_RET.v
+
 <img width="1203" height="274" alt="CLL_RET_tb" src="https://github.com/user-attachments/assets/83d380f7-0eb1-40a3-b843-d4b29e0dca5a" />
+
+Verification of CALL and RETURN operations.
+
+## Synthesis
+
+### Timing and Critical Path Analysis
+
+#### 1) Topological Gate Depth
+
+Timing analysis and critical path of CPU is determined via yosys using below terminal commands:
+
+
+
+
 
 
 
