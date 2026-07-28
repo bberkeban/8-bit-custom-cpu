@@ -22,3 +22,5 @@ module StatusRegister (
     end
     
 endmodule
+
+// ltp is determined as 1!

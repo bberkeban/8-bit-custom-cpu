@@ -140,3 +140,5 @@ module ControlUnit (
         endcase
     end
 endmodule
+
+// ltp is determined as 10 without opt

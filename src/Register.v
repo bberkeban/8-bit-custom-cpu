@@ -29,3 +29,5 @@ module registerfile (
     assign Q2 = registers[rsel_2];
 
 endmodule
+
+// ltp is determined as 7 without opt!

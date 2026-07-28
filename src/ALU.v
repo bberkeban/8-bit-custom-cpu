@@ -60,3 +60,5 @@ module ALU (
     end
     
 endmodule
+
+// ltp is determined as 19! without using opt

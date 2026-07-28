@@ -12,3 +12,5 @@ module ROM (
     
 endmodule
 
+// ltp is determined as 2 without opt
+

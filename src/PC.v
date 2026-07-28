@@ -19,4 +19,4 @@ module PC_1 (
         end
 endmodule
 
-// ltp of PC is determined as 35 without opt
+// ltp of PC is determined as 35 without using opt command
