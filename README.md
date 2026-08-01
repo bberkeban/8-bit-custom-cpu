@@ -8,18 +8,18 @@ Since this CPU is custom, ISA format should be made clear:
 #### 1. Core Instructions [15:12]
 | Opcode [15:12] | Instruction | Bit Layout [11:0] | Description |
 | :---: | :--- | :--- | :--- |
-| `0000` | **ALU** | `ALU_sel[11:9]`, `destQ[8:6]`, `srcQ1[5:3]`, `srcQ2[2:0]` | Performs ALU operation according to ALU_sel[11:9]. |
-| `0001` | **LIM** | `destQ[11:9]`, `X[8]`, `im[7:0]` | Load Immediate: Loads 8-bit value to pointed register. |
-| `0010` | **MOV** | `destQ2[11:9]`, `srcQ1[8:6]`, `XXXXXX[5:0]` | Move: Copies data from source to destination. |
-| `0011` | **SIN** | `srcQ[11:9]`, `addressQ[8:6]`, `XXXXXX[5:0]` | Store Indirect: Stores source data to RAM address pointed by destination register. |
-| `0100` | **RIN** | `dest[11:9]`, `addressQ[8:6]`, `XXXXXX[5:0]` | Read Indirect: Loads data to destination from RAM address pointed by source register. |
+| `0000` | **ALU** | `ALU_sel[11:9]`, `destQ[8:6]`, `src_Q[5:3]`, `src_Q[2:0]` | Performs ALU operation according to ALU_sel[11:9]. |
+| `0001` | **LIM** | `dest_Q[11:9]`, `X[8]`, `im_value[7:0]` | Load Immediate: Loads 8-bit value to pointed register. |
+| `0010` | **MOV** | `dest_Q[11:9]`, `src_Q[8:6]`, `XXXXXX[5:0]` | Move: Copies data from source to destination. |
+| `0011` | **SIN** | `src_Q[11:9]`, `address_Q[8:6]`, `XXXXXX[5:0]` | Store Indirect: Stores source data to RAM address pointed by destination register. |
+| `0100` | **RIN** | `dest_Q[11:9]`, `address_Q[8:6]`, `XXXXXX[5:0]` | Read Indirect: Loads data to destination from RAM address pointed by source register. |
 | `0101` | **BJP** | `condition[11:8]`, `address[7:0]` | Branch Jump: Jumps to address based on condition (see table below). |
-| `1000` | **CLL** | `XXXX[11:8]`, `addr[7:0]` | Call (Jump + Link): Jumps to pointed address and saves next address in Register 7 (Q7). |
+| `1000` | **CLL** | `XXXX[11:8]`, `address[7:0]` | Call (Jump + Link): Jumps to pointed address and saves next address in Register 7 (Q7). |
 | `1001` | **RET** | `XXXXXXXXXXXX[11:0]` | Return: Returns from CALL using the address from Register 7 (Q7). |
 
 > *Note: `X` represents ignored/don't care bits.*
 
-> *Note: `Q` represents/means register.*
+> *Note: `Q` represents register.*
 
 
 #### 2. ALU Operations (`ALU_sel [11:9]`)
@@ -35,24 +35,24 @@ Since this CPU is custom, ISA format should be made clear:
 | `111` | **ASR** | Arithmetic Shift Right |
 
 
-#### 3. Branch JMP Conditions (`condition [11:8]`)
+#### 3. Branch Jump Conditions (`condition [11:8]`)
 | `cond`  | Description |
 | :---: | :--- |
-| `0000` | JMP if Equal (`==`) |
-| `0001` | JMP if Not Equal (`!=`) |
-| `0010` | JMP if Lesser Than (`<` signed) |
-| `0011` | JMP if Greater or Equal (`>=` signed) |
-| `0100` | JMP if Greater Than (`>` signed) |
-| `0101` | JMP if Lesser or Equal (`<=` signed) |
-| `0110` | JMP if Lesser Than (`<` unsigned) |
-| `0111` | JMP if Greater or Equal (`>=` unsigned) |
-| `1000` | JMP if Greater Than (`>` unsigned) |
-| `1001` | JMP if Lesser or Equal (`<=` unsigned) |
-| `1010` | JMP if overflow |
-| `1011` | JMP if no overflow |
-| `1100` | JMP if positive |
-| `1101` | JMP if negative |
-| `1110` | Always JMP |
+| `0000` | Jump if Equal (`==`) |
+| `0001` | Jump if Not Equal (`!=`) |
+| `0010` | Jump if Lesser Than (`<` signed) |
+| `0011` | Jump if Greater or Equal (`>=` signed) |
+| `0100` | Jump if Greater Than (`>` signed) |
+| `0101` | Jump if Lesser or Equal (`<=` signed) |
+| `0110` | Jump if Lesser Than (`<` unsigned) |
+| `0111` | Jump if Greater or Equal (`>=` unsigned) |
+| `1000` | Jump if Greater Than (`>` unsigned) |
+| `1001` | Jump if Lesser or Equal (`<=` unsigned) |
+| `1010` | Jump if overflow |
+| `1011` | Jump if no overflow |
+| `1100` | Jump if positive |
+| `1101` | Jump if negative |
+| `1110` | Always JMP (No condition) |
 | `1111` | Never JMP (No operation) |
 
 > *Note: There is no independent unconditinonal jump (JMP) command since there is Always Jump (1110) in BJP Command*
@@ -77,7 +77,9 @@ For visualization, the datapath of CPU is shown in below schematic:
 ### Simulations
 
 Results below are obtained via **Icarus Verilog** and **GTKwave**.
-In order to compile and simulate the proccessor in your local device, you can run these terminal commands.
+In order to simulate the CPU in your local device, you can run these terminal commands.
+
+> *Note: Since the CPU fetches instructions from the ROM, update ROM_opcode.txt according to your intended simulation. The machine code blocks for each simulation are ready to execute once the "//" comment indicators are removed.*
 
 ```bash
 # For branch jump simulation: 
@@ -128,7 +130,62 @@ Verification of CALL and RETURN operations.
 
 #### 1) Topological Gate Depth
 
-Timing analysis and critical path of CPU is determined via yosys using below terminal commands:
+Critical path of CPU is computed via yosys using below terminal commands:
+
+```bash
+# Read the module that yosys is going to synthesis
+read_verilog src/"ModuleFileName".v
+
+# Check and declare the top module
+hierarchy -check -top "ModuleName"
+
+# Translate behavioral code blocks and abstract memory arrays into physical flip-flops
+proc
+memory
+opt -full
+
+# Flatten all modules included in top module, removing top/sub module boundaries.
+flatten
+opt -full
+
+# Map abstract arithmetic/logical codes into physical cells
+techmap
+opt -full
+
+# Synthesize the module by only using primitive gate cells. Transfer $MUX or $ADD cells into AND, OR, XOR...
+abc -g gates
+opt -full
+
+# Remove unused pins, wires and cells
+clean
+
+# Show implementation statistics
+stat
+
+# Compute the Longest Topological Path
+ltp
+```
+
+Longest Topological Path (Critical Path) of all modules are shown below table:
+
+| Module Name | Longest Topological Path (LTP) |
+| :--- | :---: |
+| **ALU** (Arith. Logic Unit) | 19 |
+| **CU** (Control Unit) | 10 |
+| **PC** (Program Counter) | 9 |
+| **RF** (Register File) | 7 |
+| **SR** (Status Register) | 1 |
+| **RAM** (Data Memory) | 15 |
+| **ROM** (Instruction Mem.)| 3 |
+
+These LTP values show the gate-level depth (Logic Level) of all modules. With this information, the critical path of CPU can be determined **without using an external library** - solely depends on generic synthesis.
+
+#### 2) Critical Path
+
+The critical path of CPU is decided by ALU instructions with LTP of 45. 
+
+> *Note: Because there is no external library given to Yosys, the ALU is synthesized using an 8-bit RCA (Ripple Carry Adder). An 8-bit RCA alone has 16 logic level. Thus, the ALU has the longest LTP and determines the critical path.*
+
 
 
 
