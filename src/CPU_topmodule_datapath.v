@@ -44,13 +44,15 @@ module CPU(
 
     wire [7:0] ram_read_data;
 
+    wire [7:0] incremented_PC;
+
     always @(*) begin //register write data selection MUX
         case (MUX_sel_reg)
             3'b000 : registerwritedata = op;
             3'b001 : registerwritedata = ram_read_data;
             3'b010 : registerwritedata = im_reg;
             3'b011 : registerwritedata = Q1;
-            3'b100 : registerwritedata = PCSEL + 8'b00000001;
+            3'b100 : registerwritedata = incremented_PC;
             default: registerwritedata = 8'b0;
         endcase
     end
@@ -95,12 +97,13 @@ module CPU(
         .PC_select(PCSEL)
     );
     
-    PC_1 PC(
+    PC3 PC(
         .clk(clk),
         .rst(rst),
         .I(finalizedPCload),
         .load(load_PC),
-        .PC(PCSEL)
+        .PC(PCSEL),
+        .incremented_PC(incremented_PC)
     );
     
     registerfile REG(
