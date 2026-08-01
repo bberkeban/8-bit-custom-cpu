@@ -30,4 +30,4 @@ module registerfile (
 
 endmodule
 
-// ltp is determined as 7 without opt!
+// ltp is determined as 7

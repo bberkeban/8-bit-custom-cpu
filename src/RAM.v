@@ -29,8 +29,8 @@ module RAM (
         end
     end
 
-    assign read_data = RAM[address_sel]; //asenkron read
+    assign read_data = RAM[address_sel];
 
 endmodule
 
-// ltp is determined as 14 without opt
+// ltp is determined as 15
