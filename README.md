@@ -52,8 +52,8 @@ Since this CPU is custom, ISA format should be made clear:
 | `1011` | Jump if no overflow |
 | `1100` | Jump if positive |
 | `1101` | Jump if negative |
-| `1110` | Always JMP (No condition) |
-| `1111` | Never JMP (No operation) |
+| `1110` | Always Jump (No condition) |
+| `1111` | Never Jump (No operation) |
 
 > *Note: There is no independent unconditinonal jump (JMP) command since there is Always Jump (1110) in BJP Command*
 
@@ -130,7 +130,7 @@ Verification of CALL and RETURN operations.
 
 #### 1) Topological Gate Depth
 
-Critical path of CPU is computed via yosys using below terminal commands:
+Critical path of the CPU is computed via yosys using below terminal commands:
 
 ```bash
 # Read the module that yosys is going to synthesis
