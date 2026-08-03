@@ -1,7 +1,14 @@
 module CPU(
     input clk,
     input rst,
-    output [7:0] debug_op
+
+    output [7:0] debug_register_readdata,
+    output [7:0] debug_pc_output,
+    output [7:0] debug_alu_output,
+    output [15:0] debug_instructions,
+    output [7:0] debug_register_writedata,
+    output [2:0] debug_register_writedata_mux_select
+
     );
 
     wire zero; // to CU from SR
@@ -152,6 +159,11 @@ module CPU(
         .read_data(ram_read_data)
     );
 
-    assign debug_op = Q1;
-
+    assign debug_register_readdata = Q1;
+    assign debug_alu_output = op;
+    assign debug_pc_output = PCSEL;
+    assign debug_instructions = instr;
+    assign debug_register_writedata = registerwritedata;
+    assign debug_register_writedata_mux_select = MUX_sel_reg;
+    
 endmodule
