@@ -1,7 +1,11 @@
 # 8 Bit Custom Single Cycle CPU Design
 
+## Abstract
+
+This project presents the design, verification, synthesis and optimization of a custom 8-bit single-cycle CPU -- fully implemented in Verilog. The CPU supports 8-opcode custom ISA (ALU, LIM, MOV, SIN, RIN, BJP, CLL, RET) with 16-condition branch evaluation unit. The processor has an 8-operation ALU and a dedicated link register for subroutine call/return operations. The functional verification was conducted using **Icarus Verilog** and **GTKwave** through various directed and random testbenches. Synthesis was carried out using
+generic, library-independent logic synthesis. In an early design, critical path is dictated by CLL operations, primarily due to Program Counter unit having a **local** logic depth of 35. The Program Counter was subsequently optimized, reducing its local logic level to 9 (a %75 reduction). Sequential Equivalence Checking (SEC) was performed for the optimized Program Counter unit using **Yosys** SAT solver. This optimization process reduced the overall CPU's critical path from 59 to 45 logic levels. The current critical path of the CPU is dictated by ALU operations with a **%24** reduction.
+
 ## Architecture
-Since this CPU is custom, ISA format should be made clear:
 
 ### Instruction Set Architecture (ISA)
 
