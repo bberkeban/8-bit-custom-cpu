@@ -104,7 +104,7 @@ vvp CPU_sim_ALSR.vvp
 gtkwave ALU_LIM_SIN_RIN.vcd
 ```
 ```bash
-# For CLL and RET simuatlion:
+# For CLL and RET simulation:
 iverilog -o CPU_sim_CLLRET.vvp src/*.v tb/CLL_RET.v
 vvp CPU_sim_CLLRET.vvp
 gtkwave CLL_RET.vcd
@@ -204,6 +204,52 @@ Verification of CALL and RETURN operations.
 #### 2) Random Testing
 
 ### Structural Verification
+
+The CPU is structurally verified using below **Yosys** commands
+
+```bash
+# Reading all source verilog code in /src file
+read_verilog *.v
+
+# Declaring the top module
+hierarchy -check -top CPU
+
+# Removing hierarchal boundaries between top/sub modules
+flatten
+
+# Synthesize physical units from behavioral and memory code blocks
+proc
+opt -full
+
+memory
+memory_map
+opt -full
+
+# Synthesize physical units from logical and arithmetic code blocks
+techmap
+
+# Optimize and clean unused wires-pins before verification
+opt -full
+clean
+
+# Verify the CPU by checking unused drivers, pins and wires
+check
+
+# Verify the CPU by checking strongly connected components (logic-combinational loops)
+scc -expect 0
+```
+
+The design is structurally verified as shown in below terminal lines. Yosys detected 0 structural problems and combinational loops. Since the CPU has a single-cycle architecture, a combinational loop would have devastating synthesis consequences. By flattening the design, all units / submodules and datapath are checked, thereby verifying the entire structure.
+
+```bash
+18. Executing CHECK pass (checking for obvious problems).
+Checking module CPU...
+Found and reported 0 problems.
+
+19. Executing SCC pass (detecting logic loops).
+Found 0 SCCs in module CPU.
+Found and expected 0 SCCs.
+```
 
 ### Formal Verification
 
