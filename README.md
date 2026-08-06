@@ -1,5 +1,14 @@
 # 8 Bit Custom Single Cycle CPU Design
 
+<div align="center">
+
+![Language](https://img.shields.io/badge/Language-Verilog-blue)
+![Architecture](https://img.shields.io/badge/Architecture-8--Bit%20Single--Cycle-purple)
+![Synthesis](https://img.shields.io/badge/Synthesis-Yosys%20Open%20SYNTH-orange)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+</div>
+
 ## Abstract
 
 This project presents the design, verification, synthesis and optimization of a custom 8-bit single-cycle CPU -- fully implemented in Verilog. The CPU supports 8-opcode custom ISA (ALU, LIM, MOV, SIN, RIN, BJP, CLL, RET) with 16-condition branch evaluation unit. The processor has an 8-operation ALU and a dedicated link register for subroutine call/return operations. The functional verification was conducted using **Icarus Verilog** and **GTKwave** through various directed and random testbenches. Synthesis was carried out using
