@@ -1,3 +1,5 @@
+`timescale 1ns/1ns
+
 module tbALU_LIM_SIN_RIN;
     reg clk;
     reg rst;
