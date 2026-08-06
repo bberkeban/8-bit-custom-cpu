@@ -22,6 +22,11 @@ generic, library-independent logic synthesis. In an early design, critical path 
 ### Instruction Set Architecture (ISA)
 
 #### 1. Core Instructions [15:12]
+
+<div align="center">
+  <h5>Table 1: ISA Bit Layout</h5>
+</div>
+
 | Opcode [15:12] | Instruction | Bit Layout [11:0] | Description |
 | :---: | :--- | :--- | :--- |
 | `0000` | **ALU** | `ALU_sel[11:9]`, `destination[8:6]`, `src_1[5:3]`, `src_2[2:0]` | Performs ALU operation according to ALU_sel[11:9]. |
@@ -39,6 +44,13 @@ generic, library-independent logic synthesis. In an early design, critical path 
 
 
 #### 2. ALU Operations (`ALU_sel [11:9]`)
+
+<div align="center">
+  <h5>Table 2: ALU Selection</h5>
+</div>
+
+<div align = "center">
+
 | `ALU_sel` | Operation | Description |
 | :---: | :--- | :--- |
 | `000` | **ADD** | Addition |
@@ -50,9 +62,19 @@ generic, library-independent logic synthesis. In an early design, critical path 
 | `110` | **OR**  | Bitwise OR |
 | `111` | **ASR** | Arithmetic Shift Right |
 
+</div>
+
+
 
 #### 3. Branch Jump Conditions (`condition [11:8]`)
-| `cond`  | Description |
+
+<div align="center">
+  <h5>Table 3: Condition Selection</h5>
+</div>
+
+<div align = "center">
+  
+| `Condition`  | Description |
 | :---: | :--- |
 | `0000` | Jump if Equal (`==`) |
 | `0001` | Jump if Not Equal (`!=`) |
@@ -70,6 +92,8 @@ generic, library-independent logic synthesis. In an early design, critical path 
 | `1101` | Jump if negative |
 | `1110` | Always Jump (No condition) |
 | `1111` | Never Jump (No operation) |
+
+</div>
 
 > *Note: There is no independent unconditinonal jump (JMP) command since there is Always Jump (1110) in BJP Command*
 
@@ -126,7 +150,7 @@ gtkwave CLL_RET.vcd
 
 
 <div align="center">
-  <h4>ALU-LIM-SIN-RIN Directed Test Flow</h4>
+  <h4>Table 4: ALU-LIM-SIN-RIN Directed Test Flow</h4>
 </div>
 
 <div align = "center">
@@ -153,7 +177,7 @@ This simulation was conducted in order to verify ALU, LIM, SIN and RIN instructi
 
 
 <div align="center">
-  <h4>BJP Directed Test Flow</h4>
+  <h4>Table 5: BJP Directed Test Flow</h4>
 </div>
 
 <div align = "center">
@@ -183,7 +207,7 @@ This test flow was focused on Branch Jump operation of the CPU. As highlighted i
 
 
 <div align="center">
-  <h4>CLL-RET Directed Test Flow</h4>
+  <h4>Table 6: CLL-RET Directed Test Flow</h4>
 </div>
 
 <div align = "center">
