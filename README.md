@@ -2,12 +2,15 @@
 
 <div align="center">
 
-![Language](https://img.shields.io/badge/Language-Verilog-blue)
-![Architecture](https://img.shields.io/badge/Architecture-8--Bit%20Single--Cycle-purple)
-![Synthesis](https://img.shields.io/badge/Synthesis-Yosys%20Open%20SYNTH-orange)
-![License](https://img.shields.io/badge/License-MIT-green)
+![Language](https://img.shields.io/badge/Language-Verilog%20IEEE--1364-blue?style=flat-square)
+![Synthesis](https://img.shields.io/badge/Synthesis-Yosys%20RTL-orange?style=flat-square)
+![Logic Synthesis](https://img.shields.io/badge/Logic%20Synthesis-UC%20Berkeley%20ABC-darkblue?style=flat-square)
+![Simulation](https://img.shields.io/badge/Simulation-Icarus%20Verilog-purple?style=flat-square)
+![Visualization](https://img.shields.io/badge/Visualization-GTKWave-teal?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
 </div>
+
 
 ## Abstract
 
