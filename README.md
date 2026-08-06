@@ -12,11 +12,11 @@ generic, library-independent logic synthesis. In an early design, critical path 
 #### 1. Core Instructions [15:12]
 | Opcode [15:12] | Instruction | Bit Layout [11:0] | Description |
 | :---: | :--- | :--- | :--- |
-| `0000` | **ALU** | `ALU_sel[11:9]`, `destQ[8:6]`, `src_Q[5:3]`, `src_Q[2:0]` | Performs ALU operation according to ALU_sel[11:9]. |
-| `0001` | **LIM** | `dest_Q[11:9]`, `X[8]`, `im_value[7:0]` | Load Immediate: Loads 8-bit value to pointed register. |
-| `0010` | **MOV** | `dest_Q[11:9]`, `src_Q[8:6]`, `XXXXXX[5:0]` | Move: Copies data from source to destination. |
-| `0011` | **SIN** | `src_Q[11:9]`, `address_Q[8:6]`, `XXXXXX[5:0]` | Store Indirect: Stores source data to RAM address pointed by destination register. |
-| `0100` | **RIN** | `dest_Q[11:9]`, `address_Q[8:6]`, `XXXXXX[5:0]` | Read Indirect: Loads data to destination from RAM address pointed by source register. |
+| `0000` | **ALU** | `ALU_sel[11:9]`, `destination[8:6]`, `src_1[5:3]`, `src_2[2:0]` | Performs ALU operation according to ALU_sel[11:9]. |
+| `0001` | **LIM** | `destination[11:9]`, `X[8]`, `immediate_val[7:0]` | Load Immediate: Loads 8-bit value to pointed register. |
+| `0010` | **MOV** | `destination[11:9]`, `src[8:6]`, `XXXXXX[5:0]` | Move: Copies data from source to destination. |
+| `0011` | **SIN** | `src_reg[11:9]`, `address_reg[8:6]`, `XXXXXX[5:0]` | Store Indirect: Stores source data to RAM address pointed by destination register. |
+| `0100` | **RIN** | `destination[11:9]`, `address_reg[8:6]`, `XXXXXX[5:0]` | Read Indirect: Loads data to destination from RAM address pointed by source register. |
 | `0101` | **BJP** | `condition[11:8]`, `address[7:0]` | Branch Jump: Jumps to address based on condition (see table below). |
 | `1000` | **CLL** | `XXXX[11:8]`, `address[7:0]` | Call (Jump + Link): Jumps to pointed address and saves next address in Register 7 (Q7). |
 | `1001` | **RET** | `XXXXXXXXXXXX[11:0]` | Return: Returns from CALL using the address from Register 7 (Q7). |
@@ -75,10 +75,16 @@ Register 7 (Q7) is reserved for CLL and RET instructions. Next instruction addre
 
 For visualization, the datapath of CPU is shown in below schematic:
 
-#### Single Cycle 8-Bit CPU
-<img width="3240" height="2036" alt="CPUschematicfinalized" src="https://github.com/user-attachments/assets/477ea94c-2b54-4572-a9ab-096c0740da8c" />
+<div align="center">
+  <img width="3240" height="2036" alt="CPUschematicfinalized" src="https://github.com/user-attachments/assets/477ea94c-2b54-4572-a9ab-096c0740da8c" />
+  <p><b>Figure 1:</b> 8-Bit Single Cycle CPU RTL Schematic</p>
+</div>
 
-### Simulations
+
+## Verification
+
+
+### Functional Verification
 
 Results below are obtained via **Icarus Verilog** and **GTKwave**.
 In order to simulate the CPU in your local device, you can run these terminal commands.
@@ -104,29 +110,102 @@ vvp CPU_sim_CLLRET.vvp
 gtkwave CLL_RET.vcd
 ```
 
-#### Verification of ALU-LIM-SIN-RIN Commands
+#### 1) Directed Testing
+
+##### Verification of ALU-LIM-SIN-RIN Commands
+
+<div align="center">
+  <h4>ALU-LIM-SIN-RIN Directed Test Flow</h4>
+</div>
+
+<div align = "center">
+  
+| Clock Cycle | Assembly Code | RTL | Comment |
+| :---: | :---: | :---: | :---: |
+| `#0` | `LIM Q0 15` | `Q0 <- d15` | `Load 15 into Register 0` |
+| `#1` | `LIM Q1 1` | `Q1 <- d1` | `Load 1 into Register 1` |
+| `#2` | `ADD Q3, Q0 Q1` | `Q3 <- Q0 + Q1` | `Add Q0 and Q1, store result in Q3` |
+| `#3` | `LIM Q6 8` | `Q6 <- d8` | `Load 8 into Register 6` |
+| `#4` | `SIN Q3, Q6` | `MEM[Q6] <- Q3` | `Store value of Q3 into memory address at Q6` |
+| `#5` | `RIN Q2, Q6` | `Q2 <- MEM[Q6]` | `Read value from memory address at Q6 into Q2` |
+
+</div>
 
 Simulating testbench file tb/ALU_LIM_SIN_RIN.v:
 
-<img width="1260" height="318" alt="ALU_LIM_SIN_RIN_tb" src="https://github.com/user-attachments/assets/20eaf46d-081c-470d-afe8-52c302c504a7" />
+<div align="center">
+<img width="1201" height="329" alt="ALU_LIM_RIN_SIN_tb_new" src="https://github.com/user-attachments/assets/3836bc1b-aa5f-45a6-a211-3ae8255241d3" />
+<p><b>Figure 2:</b> ALU-LIM-SIN-RIN Operations' Directed Testbench Waveforms</p>
+</div>
 
-This simulation verifies ALU, LIM (Load Immediate), SIN-RIN (Store-Read Indirect) operations.
+This simulation was conducted in order to verify ALU, LIM, SIN and RIN instructions. As highlighted in Figure 2; CPU loaded immediate value (LIM Q0 15), performed ALU operations (ADD Q3, Q0 Q1), stored/read indirect by using register values as address pointers (SIN Q3, Q6 - RIN Q2, Q6).
 
-#### Verification of Branch Jump Command
+##### Verification of Branch Jump Command
+
+<div align="center">
+  <h4>BJP Directed Test Flow</h4>
+</div>
+
+<div align = "center">
+  
+| Clock Cycle | Assembly Code | RTL | Comment |
+| :---: | :---: | :---: | :---: |
+| `#0` | `LIM Q0 24` | `Q0 <- d24` | `Load 24 into Register 0`|
+| `#1` | `LIM Q1 24` | `Q1 <- d24` | `Load 24 into Register 1`|
+| `#2` | `SUB Q2, Q1 Q0` | `Q2 <- Q1 - Q0` | `Subtract Q0 from Q1 and load into Q2`|
+| `#3` | `BEQ 8` | `If Equal PC <- 8` | `Evaluate equality and branch jump to 8th address`  |
+| `#4` | `LIM Q0 8` | `Q0 <- 8` | `Trap instruction` |
+| `#5` | `LIM Q1 8` | `Q1 <- 8` | `Trap instruction` |
+| `#6` | `LIM Q2 8` | `Q2 <- 8` | `Trap instruction` |
+| `#7` | `LIM Q3 8` | `Q3 <- 8` | `Trap instruction` |
+| `#8` | `ADD Q2, Q0 Q1` | `Q2 <- Q0 + Q1` | `CPU successfully branch jumped and executed 8th instruction`|
+
+</div>
 
 Simulating testbench file tb/BJP.v:
 
-<img width="1138" height="273" alt="BJP_tb" src="https://github.com/user-attachments/assets/3cfa91cc-b1cb-4ef8-a30a-022cb940fee0" />
+<div align="center">
+<img width="1354" height="260" alt="BJP_tb_new" src="https://github.com/user-attachments/assets/7b6506ef-362d-4d3f-909e-9c386215ca5c" />
+<p><b>Figure 3:</b> Branch Jump Operation's Directed Testbench Waveforms</p>
+</div>
 
-CPU can perform branch jump. In this simulation CPU evaluated the equality and jumped from PC = 3 to PC = 8.
+This test flow was focused on Branch Jump operation of the CPU. As highlighted in Figure 3, CPU evaluated the BEQ (Jump if equal) condition at clock cycle = #3 and successfully branched to PC = 8. There are trap instructions between clock cycle #4-#7 which the CPU should not execute. The CPU did not execute trap instructions and successfully carried on instruction #8 (ADD Q2, Q0 Q1). If the CPU failed to properly simulate the test flow, it could be detected by examining Registers 1-3.
 
-#### Verification of CALL and RETURN Commands
+##### Verification of CALL and RETURN Commands
+
+<div align="center">
+  <h4>CLL-RET Directed Test Flow</h4>
+</div>
+
+<div align = "center">
+  
+| Clock Cycle | Assembly Code | RTL | Comment |
+| :---: | :---: | :---: | :---: |
+| `#0` | `LIM Q0 8` | `Q0 <- d8` | `Load 8 into Register 0` |
+| `#1` | `LIM Q1 2` | `Q1 <- d2` | `Load 2 into Register 1` |
+| `#2` | `CLL 4` | `Q7 <- 3, PC <- 4` | `Call subroutine at address 4` |
+| `#3` | `LIM Q2 16` | `Q2 <- d16` | `(Skipped by CLL)` |
+| `#4` | `ADD Q5, Q0 Q1` | `Q5 <- Q0 + Q1` | `Subroutine execution: Add Q0, Q1 and write Q5` |
+| `#5` | `RET` | `PC <- Q7(3)` | `CPU successfully returned from subroutine` |
+
+</div>
 
 Simulating testbench file tb/CLL_RET.v
 
-<img width="1203" height="274" alt="CLL_RET_tb" src="https://github.com/user-attachments/assets/83d380f7-0eb1-40a3-b843-d4b29e0dca5a" />
+<div align="center">
+<img width="1340" height="284" alt="CLL_RET_tb_new" src="https://github.com/user-attachments/assets/3fbf9ea9-493d-4fe2-ae2d-539f6f60fc57" />
+<p><b>Figure 4:</b> Call and Return Operations' Directed Testbench Waveforms</p>
+</div>
+
+The ability of executing subroutine without any hardware complication of CPU was verified. As highlighted in Figure 4, the CPU called a subroutine in clock cycle #2 and jumped to 4th instruction address. It is crucial to show that return address (PC + 1) was stored in Register 7 (Q7) since it is dedicated to CLL/RET instructions. The CPU successfully executed the subroutine at 4th instruction address and returned to PC = 3 by reading Register 7 (Q7).
 
 Verification of CALL and RETURN operations.
+
+#### 2) Random Testing
+
+### Structural Verification
+
+### Formal Verification
 
 ## Synthesis
 
