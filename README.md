@@ -124,7 +124,6 @@ gtkwave CLL_RET.vcd
 
 #### 1) Directed Testing
 
-##### Verification of ALU-LIM-SIN-RIN Commands
 
 <div align="center">
   <h4>ALU-LIM-SIN-RIN Directed Test Flow</h4>
@@ -152,7 +151,6 @@ Simulating testbench file tb/ALU_LIM_SIN_RIN.v:
 
 This simulation was conducted in order to verify ALU, LIM, SIN and RIN instructions. As highlighted in Figure 2; CPU loaded immediate value (LIM Q0 15), performed ALU operations (ADD Q3, Q0 Q1), stored/read indirect by using register values as address pointers (SIN Q3, Q6 - RIN Q2, Q6).
 
-##### Verification of Branch Jump Command
 
 <div align="center">
   <h4>BJP Directed Test Flow</h4>
@@ -183,7 +181,6 @@ Simulating testbench file tb/BJP.v:
 
 This test flow was focused on Branch Jump operation of the CPU. As highlighted in Figure 3, CPU evaluated the BEQ (Jump if equal) condition at clock cycle = #3 and successfully branched to PC = 8. There are trap instructions between clock cycle #4-#7 which the CPU should not execute. The CPU did not execute trap instructions and successfully carried on instruction #8 (ADD Q2, Q0 Q1). If the CPU failed to properly simulate the test flow, it could be detected by examining Registers 1-3.
 
-##### Verification of CALL and RETURN Commands
 
 <div align="center">
   <h4>CLL-RET Directed Test Flow</h4>
