@@ -286,6 +286,53 @@ Found and expected 0 SCCs.
 
 ### Formal Verification
 
+#### Submodule-Level Equivalence Checking
+
+Since the PC module was redesigned, previous and current modules should be formally verified via submodule level equivalence checking. Below **Yosys** test flow was used:
+
+```bash
+# Read, synthesize and rename the new PC design as "gold"
+read_verilog PC.v
+hierarchy -check -top PC3
+flatten
+proc
+design -stash gold
+
+# Read, synthesize and rename the old PC design as "gate"
+read_verilog PC_1.v
+hierarchy -check -top PC_1
+flatten
+proc
+design -stash gate
+
+# Assign gold and gate modules
+design -reset
+design -copy-from gold -as gold PC3
+design -copy-from gate -as gate PC_1
+
+# Show active modules for debugging
+ls
+
+# Connect gate and gold module into equivalence miter
+miter -equiv -make_assert -flatten gold gate the_miter
+hierarchy -top the_miter
+
+# "async2sync" is needed for SAT to work on D-FF's
+async2sync
+opt
+clean
+
+# Start the verification by clearing all D-FFs
+# If "-set-init-zero" is not used, PC's D-FFs are set to random values before SAT solver, causing failure of verification!
+sat -verify -prove-asserts -show-inputs -show-outputs -seq 10 -set-init-zero the_miter
+```
+
+The Yosys test flow's result obtained as below:
+
+<img width="560" height="351" alt="Screenshot 2026-08-06 at 00 53 52" src="https://github.com/user-attachments/assets/724e5134-b1eb-4ca2-a963-95fb1bd1b1d1" />
+
+Thus, the redesigned PC unit is formally verified. Bounded Model Checking (BMC) approach was used due to the unit has D-FF's. A state space of 10 clock cycles is checked and it is proven that two modules are mathematically identical.
+
 ## Synthesis
 
 ### Timing and Critical Path Analysis
