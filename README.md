@@ -391,15 +391,19 @@ These LTP values show the gate-level depth (Logic Level) of all modules. With th
 
 #### 2) Critical Path
 
+
 The critical path of CPU is decided by ALU instructions with LTP of 45. 
 
 > *Note: Because there is no external library given to Yosys, the ALU is synthesized using an 8-bit RCA (Ripple Carry Adder). An 8-bit RCA alone has 16 logic level. Thus, the ALU has the longest LTP and determines the critical path.*
 
+For visualization, the signal propagation through ALU operations is shown in below schematic:
 
+<div align = "center">
+<img width="798" height="390" alt="the_criticalpath" src="https://github.com/user-attachments/assets/a1b5313c-842e-4445-b3a7-ba63d0e56709" />
+</div>
 
+The critical path of the CPU is worst case scenario that signal must propagate through one clock cycle. The signal must arrive the input of a Flip-Flop before next clock cycle begins. Thus, the maximum clock frequency which the CPU can operate is determined by the critical path. In this case the signal starts to propagate from Program Counter and its final destination is D-FFs of Register File. Since the signal also must propagate through Flip-Flops, the setup time of D-FF ($$T_{\text{setup}}$$) should be included in maximum frequency calculation.
 
-
-
-
-
-
+<div align="center">
+  <h3>Theoretical Critical Path Computation</h3>
+</div>
