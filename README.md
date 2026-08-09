@@ -339,7 +339,7 @@ Thus, the redesigned PC unit is formally verified. Bounded Model Checking (BMC) 
 
 #### 1) Topological Gate Depth
 
-Critical path of the CPU is computed via yosys using below terminal commands:
+Longest Topological Path of all submodules is determined using below **Yosys** commands:
 
 ```bash
 # Read the module that yosys is going to synthesis
@@ -377,6 +377,12 @@ ltp
 
 Longest Topological Path (Critical Path) of all modules are shown below table:
 
+<div align="center">
+  <h4>Table 7: Submodule Longest Topological Path</h4>
+</div>
+
+<div align = "center">
+  
 | Module Name | Longest Topological Path (LTP) |
 | :--- | :---: |
 | **ALU** (Arith. Logic Unit) | 19 |
@@ -386,6 +392,8 @@ Longest Topological Path (Critical Path) of all modules are shown below table:
 | **SR** (Status Register) | 1 |
 | **RAM** (Data Memory) | 15 |
 | **ROM** (Instruction Mem.)| 3 |
+
+</div>
 
 These LTP values show the gate-level depth (Logic Level) of all modules. With this information, the critical path of CPU can be determined **without using an external library** - solely depends on generic synthesis.
 
@@ -400,10 +408,108 @@ For visualization, the signal propagation through ALU operations is shown in bel
 
 <div align = "center">
 <img width="798" height="390" alt="the_criticalpath" src="https://github.com/user-attachments/assets/a1b5313c-842e-4445-b3a7-ba63d0e56709" />
+<p><b>Figure 4:</b></p>
 </div>
 
 The critical path of the CPU is worst case scenario that signal must propagate through one clock cycle. The signal must arrive the input of a Flip-Flop before next clock cycle begins. Thus, the maximum clock frequency which the CPU can operate is determined by the critical path. In this case the signal starts to propagate from Program Counter and its final destination is D-FFs of Register File. Since the signal also must propagate through Flip-Flops, the setup time of D-FF ($$T_{\text{setup}}$$) should be included in maximum frequency calculation.
 
+<h4 align="center">Theoretical Critical Path Computation</h4>
+
+$$
+\large
+\begin{aligned}
+\sum T_{\mathrm{LTP\_submodule}}
+&= \mathrm{ROM} \rightarrow \mathrm{CU} \rightarrow \mathrm{RF\ Read\ Logic}
+\rightarrow \mathrm{ALU} \rightarrow \mathrm{RF\ Load\ Mux}
+\rightarrow \mathrm{RF\ Write\ Logic} \\\\[10pt]
+&= 3 + 10 + 4 + 19 + 6 + 3 \\\\[10pt]
+&= 45
+\end{aligned}
+$$
+
+$$
+\large
+\begin{aligned}
+T_{\mathrm{total\ delay}}
+&= \sum T_{\mathrm{LTP\_submodule}} + T_{\mathrm{setup}} \\\\[10pt]
+&= 45 + T_{\mathrm{setup}}
+\end{aligned}
+$$
+
+> *Note: The calculated result represents the technology-independent gate level depth -- plus setup time of the destination D-FF. Therefore, current timing analysis does not indicate any absolute timing value. In order to obtain quantitive critical timing value, an external cell library should be used.*
+
+### Implementation Statistic
+
+#### 1) Pre-Realization (Yosys - Techmap)
+
 <div align="center">
-  <h3>Theoretical Critical Path Computation</h3>
+  <h4>Table 8: Yosys Pre-Gate Level Realization Metrics</h4>
 </div>
+
+<div align = "center">
+
+| Primitive | Count | Description |
+| :--- | :---: | :--- |
+| `$_OR_` | 405 | 2-Input OR Gate |
+| `$_AND_` | 346 | 2-Input AND Gate |
+| `$_NOT_` | 101 | NOT Gate|
+| `$_DFFE_PP0P_` | 68 | D-FF w/Enable & Posedge rst / RF + SR |
+| `$_MUX_` | 54 | 2-to-1 Multiplexer |
+| `$_XOR_` | 39 | 2-Input XOR Gate |
+| `$_DFF_PP0_` | 8 | Standard D-FF / PC's D-FFs |
+| **Total Comb. Cell** | 1021 | Combinational Cells |
+| **Total Seq. Cell** | 76 | Sequential Cells |
+| ***Total Cells*** | 1097 | Synthesized Logic Cells |
+
+</div>
+
+Despite the fact that implementation statistics contains primitive gates, there are **$_MUX_** cells in statistics counted as gate. This statistic is documented after technology mapping (techmap) -- before generic gate synhesis (ABC). It is expected that ABC will optimize the CPU and synthesize $_MUX_ cells as primitive gates.
+
+> *Note: It is crucial to note that Table 8 metrics contains data which not including RAM and ROM modules -- blackbox. Each one of the RAM and ROM units contains 256x8 D-FFs and extensive Store/Read selection logic. Including RAM and ROM into statistics would inflate the data.*
+
+#### 2) Logic Optimization (UC Berkeley-ABC)
+
+<div align="center">
+  <h4>Table 9: Generic Boolean Network Statistics</h4>
+</div>
+
+<div align = "center">
+  
+| Metric | Value |
+|:---:|:---:|
+| **Logic Levels** (LEV) | **33** |
+| **AIG Nodes** (AND) | **759** |
+| **Latches** (LAT) | **0** |
+
+</div>
+
+
+#### 3) Yosys-ABC Gate Level Realization
+
+<div align="center">
+  <h4>Table 10: Gate Level Realization Metrics</h4>
+</div>
+
+<div align = "center">
+
+| Primitive / Cell Type | Count | Hardware Description |
+| :--- | :---: | :--- |
+| `$_NAND_` | 340 | 2-Input NAND Gate |
+| `$_AND_` | 271 | 2-Input AND Gate |
+| `$_DFFE_PP0P_` | 68 | D-FF w/Enable & Posedge rst / RF + SR |
+| `$_OR_` | 47 | 2-Input OR Gate |
+| `$_ORNOT_` | 28 | 2-Input OR-NOT Gate |
+| `$_ANDNOT_` | 17 | 2-Input AND-NOT Gate |
+| `$_XNOR_` | 14 | 2-Input Equivalence Gate |
+| `$_DFF_PP0_` | 8 | Standard D-FF |
+| `$_NOR_` | 8 | 2-Input NOR Gate |
+| `$_XOR_` | 7 | 2-Input XOR Gate |
+| `$_NOT_` | 1 | NOT Gate |
+| **Total Comb. Cells** | **741** | Primitive Gates |
+| **Total Seq. Cells** | **76**| Sequential Cells |
+| ***Total Cells*** | ***817*** | **Synthesized Logic Primitives** |
+
+</div>
+
+
+
