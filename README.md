@@ -15,7 +15,7 @@
 ## Abstract
 
 This project presents the design, verification, synthesis and optimization of a custom 8-bit single-cycle CPU -- fully implemented in Verilog. The CPU supports 8-opcode custom ISA (ALU, LIM, MOV, SIN, RIN, BJP, CLL, RET) with 16-condition branch evaluation unit. The processor has an 8-operation ALU and a dedicated link register for subroutine call/return operations. The functional verification was conducted using **Icarus Verilog** and **GTKwave** through various directed and random testbenches. Synthesis was carried out using
-generic, library-independent logic synthesis. In an early design, critical path is dictated by CLL operations, primarily due to Program Counter unit having a **local** logic depth of 35. The Program Counter was subsequently optimized, reducing its local logic level to 9 (a %75 reduction). Sequential Equivalence Checking (SEC) was performed for the optimized Program Counter unit using **Yosys** SAT solver. This optimization process reduced the overall CPU's critical path from 59 to 45 logic levels. The current critical path of the CPU is dictated by ALU operations with a **%24** reduction.
+generic, library-independent logic synthesis. In an early design, critical path is dictated by CLL operations, primarily due to Program Counter unit having a **local** logic depth of 35. The Program Counter was subsequently optimized, reducing its local logic level to 9 (a 75% reduction). Sequential Equivalence Checking (SEC) was performed for the optimized Program Counter unit using **Yosys** SAT solver. This optimization process reduced the overall CPU's critical path from 57 to 45 logic levels. The current critical path of the CPU is dictated by ALU operations with a **21%** reduction.
 
 ## Architecture
 
@@ -523,6 +523,41 @@ It is confirmed that no latches were synthesized. Latches are ***asynchronous --
 </div>
 
 This results concludes the synthesis stage. The technology independent generic gate level count is shown in Table 10. Total of 741 primitive gates and 76 sequential cells were synthesized.
+
+## Optimization
+
+In the first iteration of design, the Program Counter unit had 35 LTP (Longest-Topological-Path). This is a result of below source code:
+```bash
+...
+PC <= PC + 1;
+...
+```
+Since, there was no external library given to **Yosys**, a basic incrementation of 8-bit counter was synthesized with a ripple-carry adder (RCA) logic. The RCA logic is depends on ***serial*** implementation of FAs (Full-Adder). The Program Counter determines MSB (Most-Significant Bit) of next clock cycle after the result of other 7-bit is concluded. The LTP of 45 is a result of cascade implemented FAs. Therefore it is decided that a fast-incrementer should be included in Program Counter RTL source code. Instead of RCA logic, the carry-lookahead adder logic is used to build incrementer module. Since one of the addend is always 8'd1/8'b00000001, the complex RCA logic is simplified as shown below:
+
+```bash
+...
+    wire c0 = PrevPC[0];
+    wire c1 = &PrevPC[1:0];
+    wire c2 = &PrevPC[2:0];
+    wire c3 = &PrevPC[3:0];
+    wire c4 = &PrevPC[4:0];
+    wire c5 = &PrevPC[5:0];
+    wire c6 = &PrevPC[6:0];
+    
+    assign PCload[0] = ~PrevPC[0];
+    assign PCload[1] = PrevPC[1] ^ c0;
+    assign PCload[2] = PrevPC[2] ^ c1;
+    assign PCload[3] = PrevPC[3] ^ c2;
+    assign PCload[4] = PrevPC[4] ^ c3;
+    assign PCload[5] = PrevPC[5] ^ c4;
+    assign PCload[6] = PrevPC[6] ^ c5;
+    assign PCload[7] = PrevPC[7] ^ c6;
+...
+```
+
+Optimized PC unit has LTP of 9 -- 75% reduction from LTP = 35. If PC module has 35 logic level delay, the critical path of the CPU would be dictated by `CLL` instruction with a LTP of 57. In `CLL` instructions, next PC value should be computed and written in RF's Register 7 (Q7) -- which is dedicated to `CLL` instructions. Therefore, it was crucial to optimize the Program Counter in order to shorten length of the critical path. Current critical path is 45 logic-depth -- a 21% reduction from LTP = 57.
+
+
 
 
 
