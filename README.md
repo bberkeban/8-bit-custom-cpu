@@ -483,11 +483,22 @@ Despite the fact that implementation statistics contains primitive gates, there 
 
 </div>
 
+These metrics are acquired using ``` abc -script ``` command in **Yosys**. Script file contains two lines:
+```bash
+strash
+print_stats
+```
+It is confirmed that no latches were synthesized. Latches are ***asynchronous -- level sensitive*** storage elements. No latches should be inferred in this synchronous design. Unintended latch inference would indicate an issue in the RTL source code.. Furthermore, `LEV` metric indicates the longest ***combinational*** path the CPU contains. 
+
+> *Note: AND-Inverter Graph (AIG) metric should not be interpreted as absolute primitive gate statistic, since ABC does not count inverter logics as separate primitives.*
+
+> *Note: `LEV` metric is not useful in critical path computations. Although it indicates the longest combinational path in the CPU, the critical path is an **instruction-dictated register-to-register path**. Therefore, the longest logic level reported by `LEV` metric should not be interpreted as critical timing statistic. Finally, it is safe to say that `LEV` is only measure of structural complexity and input-to-output combinational logic depth.*
+
 
 #### 3) Yosys-ABC Gate Level Realization
 
 <div align="center">
-  <h4>Table 10: Gate Level Realization Metrics</h4>
+  <h4>Table 10: Generic Gate Level Realization Metrics</h4>
 </div>
 
 <div align = "center">
@@ -507,9 +518,11 @@ Despite the fact that implementation statistics contains primitive gates, there 
 | `$_NOT_` | 1 | NOT Gate |
 | **Total Comb. Cells** | **741** | Primitive Gates |
 | **Total Seq. Cells** | **76**| Sequential Cells |
-| ***Total Cells*** | ***817*** | **Synthesized Logic Primitives** |
+| ***Total Cells*** | ***817*** | **Synthesized Logic** |
 
 </div>
+
+This results concludes the synthesis stage. The technology independent generic gate level count is shown in Table 10. Total of 741 primitive gates and 76 sequential cells were synthesized.
 
 
 
